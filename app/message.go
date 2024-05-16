@@ -1,7 +1,6 @@
 package main
 
 import "encoding/binary"
-import "fmt"
 
 type Header struct {
 	ID      uint16
@@ -22,10 +21,6 @@ type Header struct {
 func (h *Header) BytesFromSeed(id []byte, rest []byte) []byte {
 	bytes := make([]byte, 12)
 
-	//print the id and rest
-	fmt.Printf("ID: %v\n", id)
-	fmt.Printf("Rest: %v\n", rest)
-
 	idInt := (uint16(id[0]) << 8) | uint16(id[1])
 	opcode := uint16(rest[0]) & 0x78 >> 3
 	rd := uint16(rest[0]) & 0x01
@@ -36,9 +31,6 @@ func (h *Header) BytesFromSeed(id []byte, rest []byte) []byte {
 	binary.BigEndian.PutUint16(bytes[6:], h.ANCOUNT)
 	binary.BigEndian.PutUint16(bytes[8:], h.NSCOUNT)
 	binary.BigEndian.PutUint16(bytes[10:], h.ARCOUNT)
-
-	// print the bytes
-	fmt.Printf("Bytes: %v\n", bytes)
 
 	return bytes
 }
@@ -62,13 +54,13 @@ type Question struct {
 	CLASS uint16
 }
 
-func (q *Question) Bytes() []byte {
-	label := append(q.NAME, 0)
-	bytes := make([]byte, len(label)+4)
+func (q *Question) Bytes(name []byte) []byte {
+	// label := append(q.NAME, 0)
+	bytes := make([]byte, len(name)+4)
 
-	copy(bytes, label)
-	binary.BigEndian.PutUint16(bytes[len(label):], q.TYPE)
-	binary.BigEndian.PutUint16(bytes[len(label)+2:], q.CLASS)
+	copy(bytes, name)
+	binary.BigEndian.PutUint16(bytes[len(name):], q.TYPE)
+	binary.BigEndian.PutUint16(bytes[len(name)+2:], q.CLASS)
 
 	return bytes
 }
@@ -82,17 +74,16 @@ type Answer struct {
 	RDATA    []byte
 }
 
-func (a *Answer) Bytes() []byte {
-	label := append(a.NAME, 0)
-	fmt.Println("Label: ", label, len(label))
-	bytes := make([]byte, len(label)+14)
+func (a *Answer) Bytes(name []byte) []byte {
+	// label := append(a.NAME, 0)
+	bytes := make([]byte, len(name)+14)
 
-	copy(bytes, label)
+	copy(bytes, name)
 
-	binary.BigEndian.PutUint16(bytes[len(label):], a.TYPE)
-	binary.BigEndian.PutUint16(bytes[len(label)+2:], a.CLASS)
-	binary.BigEndian.PutUint32(bytes[len(label)+4:], a.TTL)
-	binary.BigEndian.PutUint16(bytes[len(label)+8:], a.RDLENGTH)
+	binary.BigEndian.PutUint16(bytes[len(name):], a.TYPE)
+	binary.BigEndian.PutUint16(bytes[len(name)+2:], a.CLASS)
+	binary.BigEndian.PutUint32(bytes[len(name)+4:], a.TTL)
+	binary.BigEndian.PutUint16(bytes[len(name)+8:], a.RDLENGTH)
 
 	bytes = append(bytes, a.RDATA...)
 
@@ -125,7 +116,7 @@ func (m *Message) Bytes() []byte {
 	return bytes
 }
 
-func (m *Message) BytesFromSeed(id []byte, rest []byte) []byte {
+func (m *Message) BytesFromSeed(id []byte, rest []byte, name []byte) []byte {
 	bytes := m.Header.BytesFromSeed(id, rest)
 
 	for _, question := range m.Questions {
