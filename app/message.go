@@ -32,9 +32,20 @@ func (h *Header) Bytes() []byte {
 }
 
 type Question struct {
-	NAME  string
+	NAME  []byte
 	TYPE  uint16
 	CLASS uint16
+}
+
+func (q *Question) Bytes() []byte {
+	label := append(q.NAME, 0)
+	bytes := make([]byte, len(label)+4)
+
+	copy(bytes, label)
+	binary.BigEndian.PutUint16(bytes[len(label):], q.TYPE)
+	binary.BigEndian.PutUint16(bytes[len(label)+2:], q.CLASS)
+
+	return bytes
 }
 
 type Answer struct{}
@@ -49,4 +60,14 @@ type Message struct {
 	Answers     []Answer
 	Authorities []Authority
 	Additionals []Additional
+}
+
+func (m *Message) Bytes() []byte {
+	bytes := m.Header.Bytes()
+
+	for _, question := range m.Questions {
+		bytes = append(bytes, question.Bytes()...)
+	}
+
+	return bytes
 }

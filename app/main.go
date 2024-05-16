@@ -32,7 +32,7 @@ func main() {
 
 		receivedData := string(buf[:size])
 		fmt.Printf("Received %d bytes from %s: %s\n", size, source, receivedData)
-		//print the received data 
+		//print the received data
 		fmt.Println(receivedData)
 
 		response := Message{
@@ -51,9 +51,16 @@ func main() {
 				NSCOUNT: 0,
 				ARCOUNT: 0,
 			},
+			Questions: []Question{
+				{
+					NAME:  []byte("\x0ccodecrafters\x02io"),
+					TYPE:  1,
+					CLASS: 1,
+				},
+			},
 		}
 
-		_, err = udpConn.WriteToUDP(response.Header.Bytes(), source)
+		_, err = udpConn.WriteToUDP(response.Bytes(), source)
 		if err != nil {
 			fmt.Println("Failed to send response:", err)
 		}
