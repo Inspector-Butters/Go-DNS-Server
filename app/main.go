@@ -49,16 +49,22 @@ func main() {
 		}
 		domainName := []byte(strings.Join(nameParts, "."))
 
+		idInt := (uint16(receivedData[0]) << 8) | uint16(receivedData[1])
+		opcode := uint16(receivedData[2]) & 0x78 >> 3
+		rd := uint16(receivedData[2]) & 0x01
+
+		fmt.Println("id", idInt)
+		fmt.Println("opcode", opcode)
 		fmt.Println("domain name", domainName, nameParts)
 
 		response := Message{
 			Header: Header{
-				ID:      1234,
+				ID:      idInt,
 				QR:      1,
-				OPCODE:  0,
+				OPCODE:  uint8(opcode),
 				AA:      0,
 				TC:      0,
-				RD:      0,
+				RD:      uint8(rd),
 				RA:      0,
 				Z:       0,
 				RCODE:   4,
