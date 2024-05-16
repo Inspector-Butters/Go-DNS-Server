@@ -22,6 +22,10 @@ type Header struct {
 func (h *Header) BytesFromSeed(id []byte, rest []byte) []byte {
 	bytes := make([]byte, 12)
 
+	//print the id and rest
+	fmt.Printf("ID: %v\n", id)
+	fmt.Printf("Rest: %v\n", rest)
+
 	copy(bytes, id)
 
 	rest[0] = rest[0] | byte(uint8(h.QR)<<7)
@@ -34,7 +38,7 @@ func (h *Header) BytesFromSeed(id []byte, rest []byte) []byte {
 	binary.BigEndian.PutUint16(bytes[10:], h.ARCOUNT)
 
 	// print the bytes
-	fmt.Println(bytes)
+	fmt.Printf("Bytes: %v\n", bytes)
 
 	return bytes
 }
