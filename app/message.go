@@ -129,3 +129,14 @@ func (m *Message) BytesFromSeed(id []byte, rest []byte) []byte {
 
 	return bytes
 }
+
+func domainNameListToHexString(domainName []string) []byte {
+	var domainNameBytes []byte
+
+	for _, part := range domainName {
+		domainNameBytes = append(domainNameBytes, byte(len(part)))
+		domainNameBytes = append(domainNameBytes, []byte(part)...)
+	}
+
+	return domainNameBytes
+}

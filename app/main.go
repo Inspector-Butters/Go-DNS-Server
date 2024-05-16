@@ -78,14 +78,14 @@ func main() {
 			},
 			Questions: []Question{
 				{
-					NAME:  domainName,
+					NAME:  domainNameListToHexString(nameParts),
 					TYPE:  1,
 					CLASS: 1,
 				},
 			},
 			Answers: []Answer{
 				{
-					NAME:     domainName,
+					NAME:     domainNameListToHexString(nameParts),
 					TYPE:     1,
 					CLASS:    1,
 					TTL:      60,
