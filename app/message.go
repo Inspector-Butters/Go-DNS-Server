@@ -1,6 +1,7 @@
 package main
 
 import "encoding/binary"
+import "fmt"
 
 type Header struct {
 	ID      uint16
@@ -21,8 +22,8 @@ type Header struct {
 func (h *Header) BytesFromSeed(id []byte, rest []byte) []byte {
 	bytes := make([]byte, 12)
 
-	// binary.BigEndian.PutUint16(bytes[0:], h.ID)
 	copy(bytes, id)
+
 	rest[0] = rest[0] | byte(uint8(h.QR)<<7)
 	bytes = append(bytes, rest...)
 
@@ -31,6 +32,9 @@ func (h *Header) BytesFromSeed(id []byte, rest []byte) []byte {
 	binary.BigEndian.PutUint16(bytes[6:], h.ANCOUNT)
 	binary.BigEndian.PutUint16(bytes[8:], h.NSCOUNT)
 	binary.BigEndian.PutUint16(bytes[10:], h.ARCOUNT)
+
+	// print the bytes
+	fmt.Println(bytes)
 
 	return bytes
 }
