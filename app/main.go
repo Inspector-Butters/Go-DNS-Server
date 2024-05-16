@@ -49,7 +49,7 @@ func main() {
 		}
 		domainName := []byte(strings.Join(nameParts, "."))
 
-		fmt.Println("domain name", domainName)
+		fmt.Println("domain name", domainName, nameParts)
 
 		response := Message{
 			Header: Header{
