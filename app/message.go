@@ -102,29 +102,29 @@ type Message struct {
 	Additionals []Additional
 }
 
-func (m *Message) Bytes() []byte {
-	bytes := m.Header.Bytes()
+// func (m *Message) Bytes() []byte {
+// 	bytes := m.Header.Bytes()
 
-	for _, question := range m.Questions {
-		bytes = append(bytes, question.Bytes()...)
-	}
+// 	for _, question := range m.Questions {
+// 		bytes = append(bytes, question.Bytes()...)
+// 	}
 
-	for _, answer := range m.Answers {
-		bytes = append(bytes, answer.Bytes()...)
-	}
+// 	for _, answer := range m.Answers {
+// 		bytes = append(bytes, answer.Bytes()...)
+// 	}
 
-	return bytes
-}
+// 	return bytes
+// }
 
 func (m *Message) BytesFromSeed(id []byte, rest []byte, name []byte) []byte {
 	bytes := m.Header.BytesFromSeed(id, rest)
 
 	for _, question := range m.Questions {
-		bytes = append(bytes, question.Bytes()...)
+		bytes = append(bytes, question.Bytes(name)...)
 	}
 
 	for _, answer := range m.Answers {
-		bytes = append(bytes, answer.Bytes()...)
+		bytes = append(bytes, answer.Bytes(name)...)
 	}
 
 	return bytes
