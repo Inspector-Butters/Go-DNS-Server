@@ -50,7 +50,7 @@ func main() {
 			nameParts = append(nameParts, string(questionPart[i:i+length]))
 			i += length
 		}
-		domainName := []byte(strings.Join(nameParts, "."))
+		// domainName := []byte(strings.Join(nameParts, "."))
 
 		idInt := (uint16(receivedData[0]) << 8) | uint16(receivedData[1])
 		opcode := uint16(receivedData[2]) & 0x78 >> 3
