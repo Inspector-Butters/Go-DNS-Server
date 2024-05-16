@@ -37,13 +37,16 @@ func main() {
 
 		questionPart := receivedData[12:]
 		var nameParts []string
-
-		for i := 0; i < len(questionPart); i++ {
+		// fmt.Println("questionPart", questionPart)
+		for i := 0; i < len(questionPart); {
 			length := int(questionPart[i])
+
 			if length == 0 {
 				break
 			}
+
 			i++
+			// fmt.Printf("index: %d, length: %d which is %s\n", i, length, string(questionPart[i:i+length]))
 			nameParts = append(nameParts, string(questionPart[i:i+length]))
 			i += length
 		}
@@ -55,7 +58,7 @@ func main() {
 
 		fmt.Println("id", idInt)
 		fmt.Println("opcode", opcode)
-		fmt.Println("domain name", domainName, nameParts)
+		fmt.Println("domain name", nameParts)
 
 		response := Message{
 			Header: Header{
