@@ -61,6 +61,8 @@ func (a *Answer) Bytes() []byte {
 	label := append(a.NAME, 0)
 	bytes := make([]byte, len(label)+14)
 
+	copy(bytes, label)
+
 	binary.BigEndian.PutUint16(bytes[len(label):], a.TYPE)
 	binary.BigEndian.PutUint16(bytes[len(label)+2:], a.CLASS)
 	binary.BigEndian.PutUint32(bytes[len(label)+4:], a.TTL)
