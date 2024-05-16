@@ -58,6 +58,16 @@ func main() {
 					CLASS: 1,
 				},
 			},
+			Answers: []Answer{
+				{
+					NAME:     []byte("\x0ccodecrafters\x02io"),
+					TYPE:     1,
+					CLASS:    1,
+					TTL:      60,
+					RDLENGTH: 4,
+					RDATA:    []byte("\x08\x08\x08\x08"),
+				},
+			},
 		}
 
 		_, err = udpConn.WriteToUDP(response.Bytes(), source)

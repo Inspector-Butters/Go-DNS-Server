@@ -48,7 +48,28 @@ func (q *Question) Bytes() []byte {
 	return bytes
 }
 
-type Answer struct{}
+type Answer struct {
+	NAME     []byte
+	TYPE     uint16
+	CLASS    uint16
+	TTL      uint32
+	RDLENGTH uint16
+	RDATA    []byte
+}
+
+func (a *Answer) Bytes() []byte {
+	label := append(a.NAME, 0)
+	bytes := make([]byte, len(label)+14)
+
+	binary.BigEndian.PutUint16(bytes[len(label):], a.TYPE)
+	binary.BigEndian.PutUint16(bytes[len(label)+2:], a.CLASS)
+	binary.BigEndian.PutUint32(bytes[len(label)+4:], a.TTL)
+	binary.BigEndian.PutUint16(bytes[len(label)+8:], a.RDLENGTH)
+
+	bytes = append(bytes, a.RDATA...)
+
+	return bytes
+}
 
 type Authority struct{}
 
@@ -67,6 +88,10 @@ func (m *Message) Bytes() []byte {
 
 	for _, question := range m.Questions {
 		bytes = append(bytes, question.Bytes()...)
+	}
+
+	for _, answer := range m.Answers {
+		bytes = append(bytes, answer.Bytes()...)
 	}
 
 	return bytes
