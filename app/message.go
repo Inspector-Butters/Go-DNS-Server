@@ -84,6 +84,7 @@ type Answer struct {
 
 func (a *Answer) Bytes() []byte {
 	label := append(a.NAME, 0)
+	fmt.Println("Label: ", label, len(label))
 	bytes := make([]byte, len(label)+14)
 
 	copy(bytes, label)
