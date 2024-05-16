@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"strings"
 )
 
 func main() {
@@ -34,6 +35,22 @@ func main() {
 		fmt.Printf("Received %d bytes from %s\n", size, source)
 		// fmt.Printf("Data: %v\n", receivedData)
 
+		questionPart := receivedData[12:]
+		var nameParts []string
+
+		for i := 0; i < len(questionPart); i++ {
+			length := int(questionPart[i])
+			if length == 0 {
+				break
+			}
+			i++
+			nameParts = append(nameParts, string(questionPart[i:i+length]))
+			i += length
+		}
+		domainName := []byte(strings.Join(nameParts, "."))
+
+		fmt.Println("domain name", domainName)
+
 		response := Message{
 			Header: Header{
 				ID:      1234,
@@ -52,14 +69,14 @@ func main() {
 			},
 			Questions: []Question{
 				{
-					NAME:  []byte("\x0ccodecrafters\x02io"),
+					NAME:  domainName,
 					TYPE:  1,
 					CLASS: 1,
 				},
 			},
 			Answers: []Answer{
 				{
-					NAME:     []byte("\x0ccodecrafters\x02io"),
+					NAME:     domainName,
 					TYPE:     1,
 					CLASS:    1,
 					TTL:      60,
@@ -69,7 +86,7 @@ func main() {
 			},
 		}
 
-		_, err = udpConn.WriteToUDP(response.BytesFromSeed(receivedData[0:2], receivedData[2:4], receivedData[12:29]), source)
+		_, err = udpConn.WriteToUDP(response.BytesFromSeed(receivedData[0:2], receivedData[2:4]), source)
 		if err != nil {
 			fmt.Println("Failed to send response:", err)
 		}

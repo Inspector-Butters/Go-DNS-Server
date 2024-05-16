@@ -54,13 +54,13 @@ type Question struct {
 	CLASS uint16
 }
 
-func (q *Question) Bytes(name []byte) []byte {
-	// label := append(q.NAME, 0)
-	bytes := make([]byte, len(name)+4)
+func (q *Question) Bytes() []byte {
+	label := append(q.NAME, 0)
+	bytes := make([]byte, len(label)+4)
 
-	copy(bytes, name)
-	binary.BigEndian.PutUint16(bytes[len(name):], q.TYPE)
-	binary.BigEndian.PutUint16(bytes[len(name)+2:], q.CLASS)
+	copy(bytes, label)
+	binary.BigEndian.PutUint16(bytes[len(label):], q.TYPE)
+	binary.BigEndian.PutUint16(bytes[len(label)+2:], q.CLASS)
 
 	return bytes
 }
@@ -74,16 +74,16 @@ type Answer struct {
 	RDATA    []byte
 }
 
-func (a *Answer) Bytes(name []byte) []byte {
-	// label := append(a.NAME, 0)
-	bytes := make([]byte, len(name)+14)
+func (a *Answer) Bytes() []byte {
+	label := append(a.NAME, 0)
+	bytes := make([]byte, len(label)+14)
 
-	copy(bytes, name)
+	copy(bytes, label)
 
-	binary.BigEndian.PutUint16(bytes[len(name):], a.TYPE)
-	binary.BigEndian.PutUint16(bytes[len(name)+2:], a.CLASS)
-	binary.BigEndian.PutUint32(bytes[len(name)+4:], a.TTL)
-	binary.BigEndian.PutUint16(bytes[len(name)+8:], a.RDLENGTH)
+	binary.BigEndian.PutUint16(bytes[len(label):], a.TYPE)
+	binary.BigEndian.PutUint16(bytes[len(label)+2:], a.CLASS)
+	binary.BigEndian.PutUint32(bytes[len(label)+4:], a.TTL)
+	binary.BigEndian.PutUint16(bytes[len(label)+8:], a.RDLENGTH)
 
 	bytes = append(bytes, a.RDATA...)
 
@@ -102,29 +102,29 @@ type Message struct {
 	Additionals []Additional
 }
 
-// func (m *Message) Bytes() []byte {
-// 	bytes := m.Header.Bytes()
-
-// 	for _, question := range m.Questions {
-// 		bytes = append(bytes, question.Bytes()...)
-// 	}
-
-// 	for _, answer := range m.Answers {
-// 		bytes = append(bytes, answer.Bytes()...)
-// 	}
-
-// 	return bytes
-// }
-
-func (m *Message) BytesFromSeed(id []byte, rest []byte, name []byte) []byte {
-	bytes := m.Header.BytesFromSeed(id, rest)
+func (m *Message) Bytes() []byte {
+	bytes := m.Header.Bytes()
 
 	for _, question := range m.Questions {
-		bytes = append(bytes, question.Bytes(name)...)
+		bytes = append(bytes, question.Bytes()...)
 	}
 
 	for _, answer := range m.Answers {
-		bytes = append(bytes, answer.Bytes(name)...)
+		bytes = append(bytes, answer.Bytes()...)
+	}
+
+	return bytes
+}
+
+func (m *Message) BytesFromSeed(id []byte, rest []byte) []byte {
+	bytes := m.Header.BytesFromSeed(id, rest)
+
+	for _, question := range m.Questions {
+		bytes = append(bytes, question.Bytes()...)
+	}
+
+	for _, answer := range m.Answers {
+		bytes = append(bytes, answer.Bytes()...)
 	}
 
 	return bytes
