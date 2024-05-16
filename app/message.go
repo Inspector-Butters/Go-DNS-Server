@@ -114,3 +114,17 @@ func (m *Message) Bytes() []byte {
 
 	return bytes
 }
+
+func (m *Message) BytesFromSeed(id []byte, rest []byte) []byte {
+	bytes := m.Header.BytesFromSeed(id, rest)
+
+	for _, question := range m.Questions {
+		bytes = append(bytes, question.Bytes()...)
+	}
+
+	for _, answer := range m.Answers {
+		bytes = append(bytes, answer.Bytes()...)
+	}
+
+	return bytes
+}

@@ -68,7 +68,7 @@ func main() {
 			},
 		}
 
-		_, err = udpConn.WriteToUDP(response.Header.BytesFromSeed(receivedData[0:2], receivedData[2:4]), source)
+		_, err = udpConn.WriteToUDP(response.BytesFromSeed(receivedData[0:2], receivedData[2:4]), source)
 		if err != nil {
 			fmt.Println("Failed to send response:", err)
 		}
