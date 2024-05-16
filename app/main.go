@@ -44,7 +44,7 @@ func main() {
 				RD:      0,
 				RA:      0,
 				Z:       0,
-				RCODE:   0,
+				RCODE:   4,
 				QDCOUNT: 1,
 				ANCOUNT: 1,
 				NSCOUNT: 0,
