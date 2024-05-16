@@ -31,7 +31,11 @@ func (h *Header) Bytes() []byte {
 	return bytes
 }
 
-type Question struct{}
+type Question struct {
+	NAME  string
+	TYPE  uint16
+	CLASS uint16
+}
 
 type Answer struct{}
 
@@ -46,5 +50,3 @@ type Message struct {
 	Authorities []Authority
 	Additionals []Additional
 }
-
-
