@@ -18,6 +18,22 @@ type Header struct {
 	ARCOUNT uint16
 }
 
+func (h *Header) BytesFromSeed(id []byte, rest []byte) []byte {
+	bytes := make([]byte, 12)
+
+	// binary.BigEndian.PutUint16(bytes[0:], h.ID)
+	copy(bytes, id)
+	bytes = append(bytes, rest...)
+
+	// binary.BigEndian.PutUint16(bytes[2:], uint16(h.QR)<<15|uint16(h.OPCODE[0:1])) //|uint16(h.OPCODE)<<11|uint16(h.AA)<<10|uint16(h.TC)<<9|uint16(h.RD)<<8|uint16(h.RA)<<7|uint16(h.Z)<<4|uint16(h.RCODE))
+	binary.BigEndian.PutUint16(bytes[4:], h.QDCOUNT)
+	binary.BigEndian.PutUint16(bytes[6:], h.ANCOUNT)
+	binary.BigEndian.PutUint16(bytes[8:], h.NSCOUNT)
+	binary.BigEndian.PutUint16(bytes[10:], h.ARCOUNT)
+
+	return bytes
+}
+
 func (h *Header) Bytes() []byte {
 	bytes := make([]byte, 12)
 
