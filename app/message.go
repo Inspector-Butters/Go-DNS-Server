@@ -26,12 +26,12 @@ func (h *Header) BytesFromSeed(id []byte, rest []byte) []byte {
 	fmt.Printf("ID: %v\n", id)
 	fmt.Printf("Rest: %v\n", rest)
 
-	copy(bytes, id)
+	idInt := (uint16(id[0]) << 8) | uint16(id[1])
+	opcode := uint16(rest[0]) & 0x78 >> 3
+	rd := uint16(rest[0]) & 0x01
 
-	rest[0] = rest[0] | byte(uint8(h.QR)<<7)
-	bytes = append(bytes, rest...)
-
-	// binary.BigEndian.PutUint16(bytes[2:], uint16(h.QR)<<15|uint16(h.OPCODE[0:1])) //|uint16(h.OPCODE)<<11|uint16(h.AA)<<10|uint16(h.TC)<<9|uint16(h.RD)<<8|uint16(h.RA)<<7|uint16(h.Z)<<4|uint16(h.RCODE))
+	binary.BigEndian.PutUint16(bytes[0:], idInt)
+	binary.BigEndian.PutUint16(bytes[2:], uint16(h.QR)<<15|uint16(opcode)<<11|uint16(h.AA)<<10|uint16(h.TC)<<9|uint16(rd)<<8|uint16(h.RA)<<7|uint16(h.Z)<<4|uint16(h.RCODE))
 	binary.BigEndian.PutUint16(bytes[4:], h.QDCOUNT)
 	binary.BigEndian.PutUint16(bytes[6:], h.ANCOUNT)
 	binary.BigEndian.PutUint16(bytes[8:], h.NSCOUNT)
